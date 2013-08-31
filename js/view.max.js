@@ -39,7 +39,7 @@ var page_controller = {
 	beforeInit:function(){
 		//ajax读取配置
 		_this=this;
-		$(document.body).append('<div style="margin-left:auto;margin-right:auto;color:grey;font-size:15px;">Code by Sensor(zhs490770)</div>');
+		$(document.body).append('<div style="margin-left:auto;margin-right:auto;color:grey;font-size:15px;">Code by Sensor(zhs490770)</div>').append('<div style="position:fixed;right:3px;top:3px;"><a href="http://yunfeng.zju.edu.cn/catalog.php?catalog_fid=10083" target=_blank>下载iebook版</a></div>');
 		$.ajaxSetup({async:true,cache:false});
 		$.ajax({url:"img/settings/"+pds.number+".json",success:function(data){
 			//console.debug(data);
