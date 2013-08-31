@@ -64,11 +64,11 @@ var page_controller = {
 			{
 				res_list[i]=new Array();
 				res_list[i].push({url:'img/background/'+pds.number+'/'+i+'.png',type:"img"});
-				res_list[i].push({url:'img/userhtml/'+pds.number+'/'+i+'.html',type:"html"});
+				//res_list[i].push({url:'img/userhtml/'+pds.number+'/'+i+'.html',type:"html"});
 				load_stat[i]=false;
 				load_stat_s[i]=new Array();
 				load_stat_s[i].push(false);
-				load_stat_s[i].push(false);
+				//load_stat_s[i].push(false);
 				if(i>=0 && i<=pds.total_page_cnt)
 				{
 					for(cfg_r in res_list_p[i])
