@@ -4,7 +4,7 @@ var pds = {
 	number:-1,
 	total_page_cnt:-1,		//页码数目
 	preload_cnt:3,			//预缓存的页码个数；和网络速度有关
-	bg_music:"bg.mp3",		//存储在img文件夹
+	bg_music:'',		//存储在Manual/bgmusic文件夹
 	
 };
 
@@ -41,14 +41,23 @@ var page_controller = {
 		_this=this;
 		$(document.body).append('<div style="margin-left:auto;margin-right:auto;color:grey;font-size:15px;">Code by Sensor(zhs490770)</div>').append('<div style="position:fixed;right:3px;top:3px;"><a href="http://yunfeng.zju.edu.cn/catalog.php?catalog_fid=10083" target=_blank>下载iebook版</a></div>');
 		$.ajaxSetup({async:true,cache:false});
-		$.ajax({url:"img/settings/"+pds.number+".json",success:function(data){
+		$.ajax({url:"Manual/settings/"+pds.number+".json",success:function(data){
 			//console.debug(data);
 			pds.total_page_cnt=data["page_cnt"];
-			_this.res_list_p=data["preload_list"];
+			//_this.res_list_p=data["preload_list"];
+			_this.res_list_p=new Array();
+			for(var i=1;i<=pds.total_page_cnt;i++) _this.res_list_p[i]=new Array();			
+			for(var i in data['preload_list'])
+			{
+				for(var j=1;j<=data['preload_list'][i]['last'];j++)
+				{
+					_this.res_list_p[data['preload_list'][i]['id']].push({"url":'Manual/innerpic/'+pds.number+'/'+data['preload_list'][i]['id']+'/'+j+'.'+data['preload_list'][i]['ext'],"type":data['preload_list'][i]['type']});
+				}
+			}
 			__cb_ajax=function(pid){return function(data){_this.div_html[pid]=data;this.div_html_num++;};};
 			for(var i=0;i<=pds.total_page_cnt;i++)
 			{
-				$.get("img/userhtml/"+pds.number+"/"+i+".html","",__cb_ajax(i),"text");
+				$.get("Manual/userhtml/"+pds.number+"/"+i+".html","",__cb_ajax(i),"text");
 			}
 			var this_wait_for_html_intv=setInterval(function(){
 					if(pds.total_page_cnt>this.div_html_num) return;
@@ -63,7 +72,7 @@ var page_controller = {
 			with(this)
 			{
 				res_list[i]=new Array();
-				res_list[i].push({url:'img/background/'+pds.number+'/'+i+'.png',type:"img"});
+				res_list[i].push({url:'Manual/background/'+pds.number+'/'+i+'.png',type:"img"});
 				//res_list[i].push({url:'img/userhtml/'+pds.number+'/'+i+'.html',type:"html"});
 				load_stat[i]=false;
 				load_stat_s[i]=new Array();
@@ -120,7 +129,7 @@ var page_controller = {
 		$mp3_layer.jPlayer({
 			ready: function () {
 				$(this).jPlayer("setMedia", {
-					mp3: 'img/'+pds.number+'.mp3',
+					mp3: 'Manual/bgmusic/'+pds.number+'.mp3',
 				}). bind($.jPlayer.event.ended + ".jp-repeat", function(event) { // Using ".jp-repeat" namespace so we can easily remove this event
 					$(this).jPlayer("play"); // Add a repeat behaviour so media replays when it ends. (Loops)
 				});
@@ -132,7 +141,7 @@ var page_controller = {
 		"flowplayer.swf",{
 			clip:
 			{
-				url: "mov/"+pds.number+".mp4",
+				url: "Manual/mov/"+pds.number+".mp4",
 				autoPlay: false,
 				autoBuffering: true,
 				onFinish:function(){
@@ -204,11 +213,11 @@ var page_controller = {
 			//标明为非预览模式
 			this.___preview_mode=false;
 			if(this.div_html[from]) $content_layer.html(this.div_html[from]);
-			$bgpic.css({"background":"url(img/background/"+pds.number+"/"+page_id+".png)"+modetxt,"left":"200px"}).animate({left:"0px",opacity:"1"},300,"swing").css("filter","alpha(opacity=100)");
+			$bgpic.css({"background":"url(Manual/background/"+pds.number+"/"+page_id+".png)"+modetxt,"left":"200px"}).animate({left:"0px",opacity:"1"},300,"swing").css("filter","alpha(opacity=100)");
 			return;
 		}
 		if(this.div_html[from]) $content_layer.html(this.div_html[from]);
-		$bgpic.stop(true,false).css({left:"0px",opacity:__is_proc?"0.4":"1",filter:"alpha(opacity="+(__is_proc?"40":"100")+")","background":"url(img/background/"+pds.number+"/"+page_id+".png)"+modetxt}).animate({left:"-200px",opacity:"0.2"},50,"linear",function(){pgc.__lr_anim(from+1,to,1,pgc);}).css("filter","alpha(opacity=20)");
+		$bgpic.stop(true,false).css({left:"0px",opacity:__is_proc?"0.4":"1",filter:"alpha(opacity="+(__is_proc?"40":"100")+")","background":"url(Manual/background/"+pds.number+"/"+page_id+".png)"+modetxt}).animate({left:"-200px",opacity:"0.2"},50,"linear",function(){pgc.__lr_anim(from+1,to,1,pgc);}).css("filter","alpha(opacity=20)");
 	},
 	__rl_anim:function(from,to,__is_proc,pgc)
 	{
@@ -230,11 +239,11 @@ var page_controller = {
 			//标明为非预览模式
 			this.___preview_mode=false;
 			if(this.div_html[from]) $content_layer.html(this.div_html[from]);
-			$bgpic.css({"background":"url(img/background/"+pds.number+"/"+page_id+".png)"+modetxt,"left":"-200px"}).animate({left:"0px",opacity:"1"},300,"swing").css("filter","alpha(opacity=100)");
+			$bgpic.css({"background":"url(Manual/background/"+pds.number+"/"+page_id+".png)"+modetxt,"left":"-200px"}).animate({left:"0px",opacity:"1"},300,"swing").css("filter","alpha(opacity=100)");
 			return;
 		}
 		if(this.div_html[from]) $content_layer.html(this.div_html[from]);
-		$bgpic.stop(true,false).css({left:"0px",opacity:__is_proc?"0.4":"1",filter:"alpha(opacity="+(__is_proc?"40":"100")+")","background":"url(img/background/"+pds.number+"/"+page_id+".png)"+modetxt}).animate({left:"200px",opacity:"0.2"},50,"linear",function(){pgc.__rl_anim(from-1,to,1,pgc);}).css("filter","alpha(opacity=20)");
+		$bgpic.stop(true,false).css({left:"0px",opacity:__is_proc?"0.4":"1",filter:"alpha(opacity="+(__is_proc?"40":"100")+")","background":"url(Manual/background/"+pds.number+"/"+page_id+".png)"+modetxt}).animate({left:"200px",opacity:"0.2"},50,"linear",function(){pgc.__rl_anim(from-1,to,1,pgc);}).css("filter","alpha(opacity=20)");
 	},
 	gotoPage:function(page_id){
 		//-1:封面，0：目录
@@ -265,7 +274,7 @@ var page_controller = {
 		}
 	},
 	rfPage:function(){
-		$.get("img/userhtml/"+pds.number+"/"+pda.page_id+".html","",function(data){page_controller.div_html[pda.page_id]=data;page_controller.gotoPage(pda.page_id);},"text");
+		$.get("Manual/userhtml/"+pds.number+"/"+pda.page_id+".html","",function(data){page_controller.div_html[pda.page_id]=data;page_controller.gotoPage(pda.page_id);},"text");
 	},
 	gotoNext:function(){
 		if(pda.page_id>=pds.total_page_cnt+1) return;

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <dwsync>
-<file name="5.mp3" server="172.16.11.10" local="130218744066010198" remote="130223472000000000" Dst="0" />
+<file name="first.png" server="172.16.11.10" local="130221687338480594" remote="130225290600000000" Dst="0" />
+<file name="end.png" server="172.16.11.10" local="130221687489649240" remote="130225290600000000" Dst="0" />
+<file name="next.png" server="172.16.11.10" local="130221686857683094" remote="130225290600000000" Dst="0" />
+<file name="prev.png" server="172.16.11.10" local="130222123445431881" remote="130225290600000000" Dst="0" />
+<file name="menu.png" server="172.16.11.10" local="130221687418965197" remote="130225290600000000" Dst="0" />
+<file name="fullscreen.png" server="172.16.11.10" local="130222968207953927" remote="130225290600000000" Dst="0" />
 </dwsync>

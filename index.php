@@ -18,7 +18,7 @@
 <script src="js/view.min.js"></script>
 <script>
 <?php
-$latest=5;
+$latest=6;
 if($_SERVER['QUERY_STRING']!='')
 {
 	$this_num=$_SERVER['QUERY_STRING'];

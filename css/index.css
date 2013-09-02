@@ -87,12 +87,12 @@ body {
 	height:48px;
 	z-index:200;
 }
-#controller-first {background:url(../img/static/first.png)}
-#controller-end {background:url(../img/static/end.png)}
-#controller-next {background:url(../img/static/next.png)}
-#controller-prev {background:url(../img/static/prev.png)}
-#controller-menu {background:url(../img/static/menu.png)}
-#controller-fullscreen {background:url(../img/static/fullscreen.png)}
+#controller-first {background:url(../img/first.png)}
+#controller-end {background:url(../img/end.png)}
+#controller-next {background:url(../img/next.png)}
+#controller-prev {background:url(../img/prev.png)}
+#controller-menu {background:url(../img/menu.png)}
+#controller-fullscreen {background:url(../img/fullscreen.png)}
 
 #bgpic-layer {
 	width:950px;
