@@ -5,12 +5,12 @@ var pds = {
 	total_page_cnt:-1,		//页码数目
 	preload_cnt:3,			//预缓存的页码个数；和网络速度有关
 	bg_music:'',		//存储在Manual/bgmusic文件夹
-	
+	video:''
 };
 
 var pda = {
 	page_id:-2,
-	is_video_stopped:false,
+	is_video_stopped:false
 };
 //{page_cnt:2,preload_list:{"p0":[],"p1":[],"p2":[]}}
 var page_controller = {
@@ -44,6 +44,8 @@ var page_controller = {
 		$.ajax({url:"Manual/settings/"+pds.number+".json",success:function(data){
 			//console.debug(data);
 			pds.total_page_cnt=data["page_cnt"];
+			pds.bg_music=data["bg_music"];
+			pds.video=data["video"];
 			//_this.res_list_p=data["preload_list"];
 			_this.res_list_p=new Array();
 			for(var i=1;i<=pds.total_page_cnt;i++) _this.res_list_p[i]=new Array();			
@@ -129,7 +131,7 @@ var page_controller = {
 		$mp3_layer.jPlayer({
 			ready: function () {
 				$(this).jPlayer("setMedia", {
-					mp3: 'Manual/bgmusic/'+pds.number+'.mp3',
+					mp3: 'Manual/bgmusic/'+pds.bg_music,
 				}). bind($.jPlayer.event.ended + ".jp-repeat", function(event) { // Using ".jp-repeat" namespace so we can easily remove this event
 					$(this).jPlayer("play"); // Add a repeat behaviour so media replays when it ends. (Loops)
 				});
@@ -141,7 +143,7 @@ var page_controller = {
 		"flowplayer.swf",{
 			clip:
 			{
-				url: "Manual/mov/"+pds.number+".mp4",
+				url: "Manual/mov/"+pds.video,
 				autoPlay: false,
 				autoBuffering: true,
 				onFinish:function(){
