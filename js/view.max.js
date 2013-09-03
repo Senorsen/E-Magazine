@@ -241,7 +241,7 @@ var page_controller = {
 			this.cur_pr++;
 		}
 	},
-	__lr_anim:function(from,to,__is_proc,pgc)
+	__lr_anim:function(intv,from,to,__is_proc,pgc)
 	{
 		if(!pgc) pgc=this;
 		if(from == -2) from = -1;
@@ -255,8 +255,8 @@ var page_controller = {
 		if(page_id==-1 || page_id==0 || page_id==pds.total_page_cnt+1) $page_id.html('- '+mode_txt_str[page_id]+' -');else $page_id.html('- '+page_id+' -');
 		$content_layer=$("#content-layer");
 		$content_layer.html('');
-		//干脆都是全部显示得了~
-		this.___preview_mode=false;
+		//预览模式
+		this.___preview_mode=true;
 		if(from==to)
 		{
 			//标明为非预览模式
@@ -266,9 +266,9 @@ var page_controller = {
 			return;
 		}
 		if(this.div_html[from]) $content_layer.html(this.div_html[from]);
-		$bgpic.stop(true,false).css({left:"0px",opacity:__is_proc?"0.4":"1",filter:"alpha(opacity="+(__is_proc?"40":"100")+")","background":"url(Manual/background/"+pds.number+"/"+page_id+".png)"+modetxt}).animate({left:"-200px",opacity:"0.2"},50,"linear",function(){pgc.__lr_anim(from+1,to,1,pgc);}).css("filter","alpha(opacity=20)");
+		$bgpic.stop(true,false).css({left:"0px",opacity:__is_proc?"0.4":"1",filter:"alpha(opacity="+(__is_proc?"40":"100")+")","background":"url(Manual/background/"+pds.number+"/"+page_id+".png)"+modetxt}).animate({left:"-200px",opacity:"0.2"},intv,"linear",function(){pgc.__lr_anim(intv,from+1,to,1,pgc);}).css("filter","alpha(opacity=20)");
 	},
-	__rl_anim:function(from,to,__is_proc,pgc)
+	__rl_anim:function(intv,from,to,__is_proc,pgc)
 	{
 		if(!pgc) pgc=this;
 		var mode_txt_str=new Array();
@@ -281,8 +281,8 @@ var page_controller = {
 		if(page_id==-1 || page_id==0 || page_id==pds.total_page_cnt+1) $page_id.html('- '+mode_txt_str[page_id]+' -');else $page_id.html('- '+page_id+' -');
 		$content_layer=$("#content-layer");
 		$content_layer.html('');
-		//
-		this.___preview_mode=false;
+		//预览模式
+		this.___preview_mode=true;
 		if(from==to)
 		{
 			//标明为非预览模式
@@ -292,7 +292,7 @@ var page_controller = {
 			return;
 		}
 		if(this.div_html[from]) $content_layer.html(this.div_html[from]);
-		$bgpic.stop(true,false).css({left:"0px",opacity:__is_proc?"0.4":"1",filter:"alpha(opacity="+(__is_proc?"40":"100")+")","background":"url(Manual/background/"+pds.number+"/"+page_id+".png)"+modetxt}).animate({left:"200px",opacity:"0.2"},50,"linear",function(){pgc.__rl_anim(from-1,to,1,pgc);}).css("filter","alpha(opacity=20)");
+		$bgpic.stop(true,false).css({left:"0px",opacity:__is_proc?"0.4":"1",filter:"alpha(opacity="+(__is_proc?"40":"100")+")","background":"url(Manual/background/"+pds.number+"/"+page_id+".png)"+modetxt}).animate({left:"200px",opacity:"0.2"},intv,"linear",function(){pgc.__rl_anim(intv,from-1,to,1,pgc);}).css("filter","alpha(opacity=20)");
 	},
 	gotoPage:function(page_id){
 		//-1:封面，0：目录
@@ -314,15 +314,17 @@ var page_controller = {
 		$scroll.perfectScrollbar('destroy');
 		if(animate_type)
 		{
-			this.__lr_anim(orgpi+1,page_id);
+			this.__lr_anim(200/(page_id-orgpi),orgpi,page_id);
 		}
 		else
 		{
-			this.__rl_anim(orgpi-1,page_id);
+			this.__rl_anim(200/(orgpi-page_id),orgpi,page_id);
 		}
 	},
 	rfPage:function(){
-		$.get("Manual/userhtml/"+pds.number+"/"+pda.page_id+".html","",function(data){page_controller.div_html[pda.page_id]=data;page_controller.gotoPage(pda.page_id);},"text");
+		$.get("Manual/userhtml/"+pds.number+"/"+pda.page_id+".html","",function(data){
+			page_controller.div_html[pda.page_id]=data;page_controller.gotoPage(pda.page_id);
+		},"text");
 	},
 	gotoNext:function(){
 		if(pda.page_id>=pds.total_page_cnt+1) return;
@@ -363,7 +365,7 @@ var page_controller = {
 			this.myAlert('您的浏览器不支持自动全屏。请尝试按F11键进入全屏模式。',3000);
 			return;
 		}
-		var isInFullScreen = (document.fullScreenElement && document.fullScreenElement !==     null) ||    // alternative standard method  
+		var isInFullScreen = (document.fullScreenElement && document.fullScreenElement !== null) ||    // alternative standard method  
 				(document.mozFullScreen || document.webkitIsFullScreen);
 	
 		var docElm = document.documentElement;
