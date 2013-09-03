@@ -4,7 +4,7 @@ var pds = {
 	number:-1,
 	total_page_cnt:-1,		//页码数目
 	preload_cnt:3,			//预缓存的页码个数；和网络速度有关
-	bg_music:'',		//存储在Manual/bgmusic文件夹
+	bg_music:'',			//存储在Manual/bgmusic文件夹
 	video:''
 };
 
@@ -12,7 +12,7 @@ var pda = {
 	page_id:-2,
 	is_video_stopped:false
 };
-//{page_cnt:2,preload_list:{"p0":[],"p1":[],"p2":[]}}
+
 var page_controller = {
 	res_list:new Array(),
 	res_list_p:{},
@@ -26,7 +26,6 @@ var page_controller = {
 	__page_dom_ready:function(){
 		//回调，等待其生成dom树
 		$chdiv=$('#content-layer');
-		//$chdiv.children('div').css({"position":"absolute","font-size":"22px"});
 		$scroll=$('.scroll');
 		$scroll.perfectScrollbar({wheelSpeed:40}).perfectScrollbar('update');
 		$typewriter=$('.typewriter');
@@ -75,11 +74,9 @@ var page_controller = {
 			{
 				res_list[i]=new Array();
 				res_list[i].push({url:'Manual/background/'+pds.number+'/'+i+'.png',type:"img"});
-				//res_list[i].push({url:'img/userhtml/'+pds.number+'/'+i+'.html',type:"html"});
 				load_stat[i]=false;
 				load_stat_s[i]=new Array();
 				load_stat_s[i].push(false);
-				//load_stat_s[i].push(false);
 				if(i>=0 && i<=pds.total_page_cnt)
 				{
 					for(cfg_r in res_list_p[i])
@@ -91,8 +88,6 @@ var page_controller = {
 			}
 		}
 		this.doPreload();
-		//Special Preload For mp3
-		//$("#preloader-layer").append('<img src="img/'+pds.bg_music+'">');
 		$('body').keydown(function(event){
 			//左37 右39，,Home36，PageUp33，PageDown34,回车13
 			var keycode={37:1,39:1,36:1,33:1,34:1,13:1};
@@ -125,15 +120,13 @@ var page_controller = {
 				}
 			}
 		});
-		//$('#container').append($('<div id="click-fullscreen-button"></div>').click(function(){$('body').fullScreen();}));
-		//$('#click-fullscreen-button').click();
 		$mp3_layer=$("#main-mp3-layer");
 		$mp3_layer.jPlayer({
 			ready: function () {
 				$(this).jPlayer("setMedia", {
 					mp3: 'Manual/bgmusic/'+pds.bg_music,
-				}). bind($.jPlayer.event.ended + ".jp-repeat", function(event) { // Using ".jp-repeat" namespace so we can easily remove this event
-					$(this).jPlayer("play"); // Add a repeat behaviour so media replays when it ends. (Loops)
+				}). bind($.jPlayer.event.ended + ".jp-repeat", function(event) {
+					$(this).jPlayer("play");
 				});
 			},
 			swfPath: "js",
@@ -153,9 +146,65 @@ var page_controller = {
 			keyboard:false,
 		}); 
 		$("#controller-layer").css({right:"0px"});
-		$(".controller-button:not(#controller-next,#controller-fullscreen)").css("visibility","hidden").eq(0).attr("title","封面").next().attr("title","目录").next().attr("title","封底").next().attr("title","上一页").next().attr("title","下一页").next().attr("title","全屏");
+		$(".controller-button:not(#controller-next,#controller-fullscreen)").css("visibility","hidden").eq(0)
+				.attr("title","封面").next().attr("title","目录").next().attr("title","封底").next()
+				.attr("title","上一页").next().attr("title","下一页").next().attr("title","全屏");
 		$("#controller-next").attr("title","跳过片头动画");
-		$(".controller-button").hover(function(){$(this).stop(true,false).animate({"opacity":"1"},200,"linear").css("filter","alpha(opacity=100)");},function(){if(!pda.is_video_stopped)$(this).stop(true,false).animate({"opacity":"0.20"},200,"linear").css("filter","alpha(opacity=20)");else $(this).stop(true,false).animate({"opacity":"0.4"},200,"linear").css("filter","alpha(opacity=40)");}).click(function(){if(!pda.is_video_stopped&&this.id!='controller-fullscreen'){page_controller.stopVideo();return;}var _act={"next":function(){page_controller.gotoNext()},"prev":function(){page_controller.gotoPrev()},"menu":function(){page_controller.gotoPage(0)},"first":function(){page_controller.gotoPage(-1)},"end":function(){page_controller.gotoPage(pds.total_page_cnt+1)},"fullscreen":function(){page_controller.enterFullscreen();}};_act[/[-](\w+)/.exec(this.id)[1]]();});
+		$(".controller-button").hover(
+			function()
+			{
+				$(this).stop(true,false).animate({"opacity":"1"},200,"linear").css("filter","alpha(opacity=100)");
+			},
+			function()
+			{
+				if(!pda.is_video_stopped)
+					$(this).stop(true,false).animate({"opacity":"0.20"},200,"linear").css("filter","alpha(opacity=20)");
+				else
+					$(this).stop(true,false).animate({"opacity":"0.4"},200,"linear").css("filter","alpha(opacity=40)");
+			}
+		).click(
+			function()
+			{
+				if(!pda.is_video_stopped&&this.id!='controller-fullscreen')
+				{
+					page_controller.stopVideo();
+					return;
+				}
+				var _act=
+					{"next":
+						function()
+						{
+							page_controller.gotoNext()
+						},
+					"prev":
+						function()
+						{
+							page_controller.gotoPrev()
+						},
+					"menu":
+						function()
+						{
+							page_controller.gotoPage(0)
+						},
+					"first":
+						function()
+						{
+							page_controller.gotoPage(-1)
+						},
+					"end":
+						function()
+						{
+							page_controller.gotoPage(pds.total_page_cnt+1)
+						},
+					"fullscreen":
+						function()
+						{
+							page_controller.enterFullscreen();
+						}
+					};
+				_act[/[-](\w+)/.exec(this.id)[1]]();
+			}
+		);
 	},
 	__preload_onload:function(th){
 		$this = $(th);
@@ -186,10 +235,8 @@ var page_controller = {
 				if(this.load_stat_s[this.cur_pr][s_i]) continue;
 				src = this.res_list[this.cur_pr][s_i].url;
 				type=this.res_list[this.cur_pr][s_i].type;
-				if(type=='img')$preloader.append('<img src="'+src+'" id="pri_'+this.cur_pr+'_'+s_i+'" data-cp="'+this.cur_pr+'" data-si="'+s_i+'" onload="page_controller.__preload_onload(this);">');
-				else if(type=='html'){
-					//hey!已经不在这儿了……
-				}
+				if(type=='img')
+					$preloader.append('<img src="'+src+'" id="pri_'+this.cur_pr+'_'+s_i+'" data-cp="'+this.cur_pr+'" data-si="'+s_i+'" onload="page_controller.__preload_onload(this);">');
 			}
 			this.cur_pr++;
 		}
@@ -208,8 +255,8 @@ var page_controller = {
 		if(page_id==-1 || page_id==0 || page_id==pds.total_page_cnt+1) $page_id.html('- '+mode_txt_str[page_id]+' -');else $page_id.html('- '+page_id+' -');
 		$content_layer=$("#content-layer");
 		$content_layer.html('');
-		//标明为预览模式
-		this.___preview_mode=true;
+		//干脆都是全部显示得了~
+		this.___preview_mode=false;
 		if(from==to)
 		{
 			//标明为非预览模式
@@ -234,8 +281,8 @@ var page_controller = {
 		if(page_id==-1 || page_id==0 || page_id==pds.total_page_cnt+1) $page_id.html('- '+mode_txt_str[page_id]+' -');else $page_id.html('- '+page_id+' -');
 		$content_layer=$("#content-layer");
 		$content_layer.html('');
-		//标明为预览模式
-		this.___preview_mode=true;
+		//
+		this.___preview_mode=false;
 		if(from==to)
 		{
 			//标明为非预览模式
@@ -250,7 +297,6 @@ var page_controller = {
 	gotoPage:function(page_id){
 		//-1:封面，0：目录
 		var orgpi=pda.page_id;
-		//if(page_id==pda.page_id) return;
 		if(this.cur_pr<page_id)
 		{
 			this.cur_pr=page_id;
@@ -268,11 +314,11 @@ var page_controller = {
 		$scroll.perfectScrollbar('destroy');
 		if(animate_type)
 		{
-			this.__lr_anim(orgpi,page_id);
+			this.__lr_anim(orgpi+1,page_id);
 		}
 		else
 		{
-			this.__rl_anim(orgpi,page_id);
+			this.__rl_anim(orgpi-1,page_id);
 		}
 	},
 	rfPage:function(){
@@ -314,7 +360,6 @@ var page_controller = {
 		catch(e){}
 		if(/msie/.test(navigator.userAgent.toLowerCase()))
 		{
-			//alert(this.cur_pr)
 			this.myAlert('您的浏览器不支持自动全屏。请尝试按F11键进入全屏模式。',3000);
 			return;
 		}
@@ -345,14 +390,19 @@ var page_controller = {
 	myAlert:function(s,t,id){
 		if(!id) id='alert-'+Math.random();
 		var $this_alert;
-		$('#active-layer').append($this_alert=$('<div class="alert" id="'+id+'"></div>').click(function(){$(this).fadeOut(300);}).html(s).css({'display':'block','opacity':0,'filter':'alpha(opacity=0)'}).animate({'opacity':'0.7'},200,"swing").css('filter','alpha(opacity=70)'));
+		$('#active-layer').append($this_alert=$('<div class="alert" id="'+id+'"></div>').click(
+			function()
+			{
+				$(this).fadeOut(300);
+			})
+		.html(s).css({'display':'block','opacity':0,'filter':'alpha(opacity=0)'})
+		.animate({'opacity':'0.7'},200,"swing").css('filter','alpha(opacity=70)'));
 		if(typeof t!='undefined') setTimeout(function(){$this_alert.each(function(){$(this).click();})},t);
 		return $this_alert;
 	}
-	
 };
 
 $(document).ready(function(){
-	//if($.browser.msie) alert($.browser.msie)
+	//if($.browser.msie) alert($.browser.msie)   ←这个貌似从哪个版本来着的jq里……去掉了233
 	page_controller.beforeInit();
 });
